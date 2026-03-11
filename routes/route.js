@@ -6,10 +6,16 @@ const authMiddleware=require('../Middleware/AuthMiddleware')
 const upload=require("../Middleware/UploadMiddleware")
 const Openinghourscontrollers=require("../controllers/OpeninghoursControllers")
 const SpecialHoursController=require('../controllers/SpecialHoursController')
+const RestaurantConfiguration=require('../controllers/RestaurantConfigController')
+const reservationController=require('../controllers/Reservation')
+const BlogController=require('../controllers/BlogController')
+
 
 //admin
 
 route.post('/api/login',admincontroller.loginAdmin)
+
+
 //admin -- add menu
 route.post("/api/addmenu", authMiddleware, upload.single("image"), menucontroller.addMenu)
 //get menu
@@ -18,14 +24,20 @@ route.get("/api/getmenu", menucontroller.getMenu)
 route.put("/api/editmenu/:id", authMiddleware, upload.single("image"), menucontroller.updateMenu)
 //admin--delete menu
 route.delete("/api/deletemenu/:id", authMiddleware, menucontroller.deleteMenu)
+// get single menu
+route.get("/api/getmenu/:id",authMiddleware, menucontroller.getSingleMenu)
 
 //opening hours
 
 route.post("/api/createopening-hours", authMiddleware,Openinghourscontrollers.createOpeningHours)
 
 route.get("/api/getopening-hours", Openinghourscontrollers.getOpeningHours)
+route.put(
+  "/api/opening-hours",
+  authMiddleware,
+  Openinghourscontrollers.updateOpeningHours
+)
 
-route.put("/api/opening-hours/:id", authMiddleware,Openinghourscontrollers.updateOpeningHours)
 
 //special hrs
 
@@ -33,5 +45,37 @@ route.put("/api/opening-hours/:id", authMiddleware,Openinghourscontrollers.updat
 route.post("/api/special-hours",authMiddleware,SpecialHoursController.createSpecialHours)
 
 route.get("/api/getspecial-hours",SpecialHoursController.getSpecialHours)
+
+
+//RestaurantConfigure
+
+route.post("/api/createconfig",authMiddleware,RestaurantConfiguration.createConfig)
+
+route.put("/api/updateconfig",authMiddleware,RestaurantConfiguration.updateConfig)
+
+route.get("/api/getconfig",RestaurantConfiguration.getConfig)
+
+
+//reservationRoutes
+
+route.get("/api/slots",reservationController.getAvailableSlots)
+
+route.post("/api/reservations",reservationController.createReservation)
+
+route.get("/api/getreservations",reservationController.getReservations)
+
+//blog
+
+route.post("/api/createblog",authMiddleware,upload.single("image"), BlogController.createBlog);
+route.put("/api/edit/:id",authMiddleware,upload.single("image"), BlogController.editBlog);
+route.delete("/api/delete/:id",authMiddleware, BlogController.deleteBlog);
+route.get("/api/view/:id", BlogController.viewBlog);
+route.get("/api/list", BlogController.listBlogs);
+
+
+
+
+
+
 
 module.exports=route

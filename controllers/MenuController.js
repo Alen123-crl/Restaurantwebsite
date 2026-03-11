@@ -107,3 +107,23 @@ exports.deleteMenu = async (req,res)=>{
  }
 
 }
+exports.getSingleMenu = async (req, res) => {
+
+  const { id } = req.params
+
+  try {
+
+    const menu = await Menu.findById(id)
+
+    if (!menu) {
+      return res.status(404).json("Menu not found")
+    }
+
+    res.status(200).json(menu)
+
+  } catch (err) {
+
+    res.status(500).json(err)
+
+  }
+}
